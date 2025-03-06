@@ -1,15 +1,13 @@
-const checkEnvVariables = require("./check-env-variables")
+const checkEnvVariables = require("./check-env-variables");
 
-checkEnvVariables()
+checkEnvVariables();
 
 /**
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-
-  // next.config.js
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === "production",
   },
 
   reactStrictMode: true,
@@ -28,7 +26,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "http",
-        hostname: "localhost",
+        hostname: process.env.NODE_ENV === "production" ? "https://inoxcrom-backend-production-7f9c.up.railway.app/app" : "localhost",
       },
       {
         protocol: "https",
@@ -48,6 +46,11 @@ const nextConfig = {
       },
     ],
   },
-}
 
-module.exports = nextConfig
+  // ✅ Ensure Next.js picks up the correct Medusa backend URL
+  env: {
+    NEXT_PUBLIC_MEDUSA_BACKEND_URL: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
+  },
+};
+
+module.exports = nextConfig;
