@@ -5,6 +5,7 @@ import { usePaymentContext } from "@modules/checkout/components/payment/payment-
 import { useState } from "react"
 import { useCart } from "../../../../providers/cart-provider"
 import StripePayment from "./stripe"
+import { CreditCard } from "@medusajs/icons"
 
 interface PaymentMethodSelectorProps {
   paymentMethods: {
@@ -85,13 +86,19 @@ export default function PaymentMethodSelector({ paymentMethods, cart }: PaymentM
     }
   }
 
+  const getPaymentMethodDetails = (methodId: string) => {
+    const isStripe = methodId.includes("stripe")
+    return {
+      displayName: isStripe ? "Credit Card" : methodId.replace('pp_', '').replace('_', ' ').toLowerCase(),
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Payment Method Selection */}
       <div className="grid gap-4">
         {paymentMethods.map((method) => {
-          const isStripe = method.id.includes("stripe")
-          const displayName = isStripe ? "Credit Card" : method.id
+          const { displayName } = getPaymentMethodDetails(method.id)
           const isSelected = selectedMethod === method.id
           
           return (
@@ -111,25 +118,8 @@ export default function PaymentMethodSelector({ paymentMethods, cart }: PaymentM
                 disabled={loading}
               />
               <span className="ml-3 flex items-center">
-                {isStripe ? (
-                  <>
-                    <img 
-                      src="/payment-icons/stripe.svg"
-                      alt="Stripe"
-                      className="h-6 w-auto mr-2"
-                    />
-                    {displayName}
-                  </>
-                ) : (
-                  <>
-                    <img 
-                      src={`/payment-icons/${method.id}.svg`}
-                      alt={displayName}
-                      className="h-6 w-auto mr-2"
-                    />
-                    {displayName}
-                  </>
-                )}
+                <CreditCard className="h-6 w-6 mr-2" />
+                {displayName}
               </span>
               {loading && isSelected && (
                 <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">

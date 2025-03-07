@@ -126,11 +126,9 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, selectedItems }) => {
             >
               {displayCurrency} {totalDivided % 1 === 0 ? Math.floor(totalDivided) : totalDivided.toFixed(2)}
             </span>
-            {hasShipping && (
-              <span className="text-sm text-gray-500">
-                (Includes shipping)
-              </span>
-            )}
+            <span className="text-sm text-gray-500">
+              ({hasShipping ? "Includes shipping" : "Excludes shipping"})
+            </span>
           </div>
         </div>
       </div>

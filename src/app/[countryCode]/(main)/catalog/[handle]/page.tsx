@@ -58,7 +58,7 @@ export default async function ProductPage({ params }: Props) {
     }
 
     // If no region is found, we'll still show the product but without regional pricing
-    const regionData = region || { currency_code: 'aud' }
+    const regionData = region || { id: 'default', name: 'Default Region', currency_code: 'aud' }
     
     // Get related products using improved matching
     const categoryIds = product.categories?.map(cat => cat.id) || []
@@ -129,7 +129,7 @@ export default async function ProductPage({ params }: Props) {
 
     return (
       <div>
-        <ProductTemplate product={product} region={regionData} />
+        <ProductTemplate product={product} region={regionData} countryCode={countryCode} />
         {relatedProducts.length > 0 && (
           <RelatedProducts products={relatedProducts} currentProductId={product.id} />
         )}

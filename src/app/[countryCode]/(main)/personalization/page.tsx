@@ -71,18 +71,18 @@ export default function Personalization() {
       {/* Hero Slider */}
       <HeroSliderB2B slides={sliderData} />
 
-      <div className="container mx-auto py-8 md:py-16 px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      <div className="container mx-auto py-6 sm:py-8 md:py-16 px-4 md:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
           <div className="md:col-span-1">
-            <h2 className="font-spock-bold text-3xl md:text-4xl mb-4">Custom pens with logo.</h2>
-            <h3 className="text-xl md:text-2xl text-brand-gray">Made in Spain</h3>
+            <h2 className="font-spock-bold text-2xl sm:text-3xl md:text-4xl mb-3 sm:mb-4">Custom pens with logo.</h2>
+            <h3 className="text-lg sm:text-xl md:text-2xl text-brand-gray">Made in Spain</h3>
           </div>
           <div className="md:col-span-2">
             <article className="max-w-none">
-              <h2 className="font-spock-bold text-2xl md:text-3xl text-brand-text mb-6">
+              <h2 className="font-spock-bold text-xl sm:text-2xl md:text-3xl text-brand-text mb-4 sm:mb-6">
                 The Inoxcrom® difference
               </h2>
-              <div className="space-y-6 text-lg text-brand-gray">
+              <div className="space-y-4 sm:space-y-6 text-base sm:text-lg text-brand-gray">
                 <p className="font-spock-light">Design, writing quality and durability are the hallmarks of our advertising pens.</p>
                 <p className="font-spock-light">
                   A <span className="font-spock-bold">promotional pen</span> with a logo is a good way to spread the brand at trade fairs, events and meetings. 
@@ -128,39 +128,38 @@ export default function Personalization() {
         </div>
       </div>
 
-      <div className="bg-gray-50 py-8 md:py-16">
+      <div className="bg-gray-50 py-6 sm:py-8 md:py-16">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
-            <div className="space-y-6 md:space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-12">
+            <div className="space-y-4 sm:space-y-6 md:space-y-12">
               <div className="bg-white p-4 md:p-8 rounded-lg shadow-sm transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                <div className="relative overflow-hidden rounded-lg">
-                  <Image 
+                <div className="relative overflow-hidden rounded-lg aspect-[3/2]">
+                  <Image
                     src="https://inoxcrom.es/img/cms/b2b/B2B_Inoxcrom_laser360_VERA.jpg"
                     alt="360º Laser engraving"
-                    width={600}
-                    height={400}
-                    className="w-full transition-transform duration-500 hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 hover:scale-105"
                   />
                 </div>
-                <h3 className="font-spock-bold text-xl md:text-2xl text-brand-text mt-6 mb-4">360º Laser engraving</h3>
-                <p className="font-spock-light text-brand-gray text-sm md:text-base">
+                <h3 className="font-spock-bold text-lg sm:text-xl md:text-2xl text-brand-text mt-4 sm:mt-6 mb-2 sm:mb-4">360º Laser engraving</h3>
+                <p className="font-spock-light text-brand-gray text-sm sm:text-base">
                   360º laser engraving, guarantees the reproduction of even the smallest detail and without distortions of your image. 
                   At the same time it achieves spectacular and long-lasting forms of wraparound design customization. An exclusive from Inoxcrom®
                 </p>
               </div>
-
-              <div className="bg-white p-4 md:p-8 rounded-lg shadow-sm transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                <div className="relative overflow-hidden rounded-lg">
-                  <Image 
-                    src="https://inoxcrom.es/img/cms/b2b/B2B_Inoxcrom_colores_ROCKER.jpg"
-                    alt="Your best image"
-                    width={600}
-                    height={400}
-                    className="w-full transition-transform duration-500 hover:scale-105"
-                  />
-                </div>
-                <h3 className="font-spock-bold text-xl md:text-2xl text-brand-text mt-6 mb-4">Your best image</h3>
-                <p className="font-spock-light text-brand-gray text-sm md:text-base">
+<div className="bg-white p-4 md:p-8 rounded-lg shadow-sm transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+  <div className="relative overflow-hidden rounded-lg aspect-[3/2]">
+    <Image
+      src="https://inoxcrom.es/img/cms/b2b/B2B_Inoxcrom_colores_ROCKER.jpg"
+      alt="Your best image"
+      fill
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      className="object-cover transition-transform duration-500 hover:scale-105"
+    />
+  </div>
+  <h3 className="font-spock-bold text-lg sm:text-xl md:text-2xl text-brand-text mt-4 sm:mt-6 mb-2 sm:mb-4">Your best image</h3>
+  <p className="font-spock-light text-brand-gray text-sm sm:text-base">
                   Personalization of all the details, including the body and terminals injection color, 
                   for a precise application of your corporate image.
                 </p>
@@ -169,33 +168,33 @@ export default function Personalization() {
 
             <div className="space-y-6 md:space-y-12">
               <div className="bg-white p-4 md:p-8 rounded-lg shadow-sm transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                <div className="relative overflow-hidden rounded-lg">
-                  <Image 
+                <div className="relative overflow-hidden rounded-lg aspect-[3/2]">
+                  <Image
                     src="https://inoxcrom.es/img/cms/b2b/B2B_Inoxcrom_laser360_ARC_2.jpg"
                     alt="Premium line"
-                    width={600}
-                    height={400}
-                    className="w-full transition-transform duration-500 hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 hover:scale-105"
                   />
                 </div>
-                <h3 className="font-spock-bold text-xl md:text-2xl text-brand-text mt-6 mb-4">Premium line</h3>
-                <p className="font-spock-light text-brand-gray text-sm md:text-base">
+                <h3 className="font-spock-bold text-lg sm:text-xl md:text-2xl text-brand-text mt-4 sm:mt-6 mb-2 sm:mb-4">Premium line</h3>
+                <p className="font-spock-light text-brand-gray text-sm sm:text-base">
                   Our Premium range, laser customized for flawless effect and durability.
                 </p>
               </div>
 
               <div className="bg-white p-4 md:p-8 rounded-lg shadow-sm transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-                <div className="relative overflow-hidden rounded-lg">
-                  <Image 
+                <div className="relative overflow-hidden rounded-lg aspect-[3/2]">
+                  <Image
                     src="https://inoxcrom.es/img/cms/b2b/B2B_Inoxcrom_Presentacion_VISTA.jpg"
                     alt="Display"
-                    width={600}
-                    height={400}
-                    className="w-full transition-transform duration-500 hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 hover:scale-105"
                   />
                 </div>
-                <h3 className="font-spock-bold text-xl md:text-2xl text-brand-text mt-6 mb-4">Display</h3>
-                <p className="font-spock-light text-brand-gray text-sm md:text-base">
+                <h3 className="font-spock-bold text-lg sm:text-xl md:text-2xl text-brand-text mt-4 sm:mt-6 mb-2 sm:mb-4">Display</h3>
+                <p className="font-spock-light text-brand-gray text-sm sm:text-base">
                   Custom premium case solutions that ensure your image is displayed from the very first moment.
                 </p>
               </div>
@@ -204,15 +203,15 @@ export default function Personalization() {
         </div>
       </div>
 
-      <div className="bg-gray-50 py-8 md:py-16 border-t border-gray-200">
+      <div className="bg-gray-50 py-8 sm:py-12 md:py-16 border-t border-gray-200">
         <div className="container mx-auto px-4 md:px-6 text-center">
-          <h2 className="font-spock-bold text-2xl md:text-3xl mb-4">Customization department:</h2>
-          <p className="font-spock-light text-brand-gray mb-8">For inquiries and quotations.</p>
-          <Link 
-            href="/au/contact" 
-            className="btn-primary"
+          <h2 className="font-spock-bold text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4">Customization department:</h2>
+          <p className="font-spock-light text-brand-gray text-sm sm:text-base mb-6 sm:mb-8">For inquiries and quotations.</p>
+          <Link
+            href="/au/contact"
+            className="inline-block bg-[#0093D0] hover:bg-[#0077A8] text-white font-bold py-2.5 px-6 sm:px-8 rounded-md text-sm sm:text-base transition-colors"
           >
-            Contact
+            Contact Us
           </Link>
         </div>
       </div>

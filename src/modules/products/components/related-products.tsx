@@ -25,7 +25,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products, currentProd
   }
 
   return (
-    <div className="mt-16 max-w-[1440px] mx-auto">
+    <div className="mt-16 max-w-[1440px] mx-auto px-4">
       <Heading level="h2" className="text-2xl font-bold mb-8">
         You might also like
       </Heading>
@@ -33,10 +33,10 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products, currentProd
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {relatedProducts.map((product) => (
           <Link href={`/${countryCode}/catalog/${product.handle}`} key={product.id} className="group">
-            <div className="aspect-square overflow-hidden bg-gray-100 mb-2 rounded-md">
+            <div className="overflow-hidden bg-gray-100 mb-2 rounded-md">
               {product.thumbnail ? (
-                <img 
-                  src={product.thumbnail} 
+                <img
+                  src={product.thumbnail}
                   alt={product.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

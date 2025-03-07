@@ -18,6 +18,7 @@ type ProductActionsProps = {
   }
   region: any
   selectedVariant: ProductVariant | null
+  onVariantChange: (variant: ProductVariant) => void
   countryCode: string
 }
 
@@ -25,7 +26,7 @@ const ProductActions = ({
   product,
   region,
   selectedVariant,
-  countryCode
+  countryCode,
 }: ProductActionsProps) => {
   const router = useRouter()
   const [quantity, setQuantity] = useState(1)
@@ -55,16 +56,16 @@ const ProductActions = ({
       toast.error('Please select all options');
       return;
     }
-    
+
     setIsAdding(true);
-    
+
     try {
       await addToCart({
         variantId: selectedVariant.id,
         quantity: quantity,
-        countryCode: countryCode
+        countryCode: countryCode,
       })
-      
+
       toast.success(`Added ${quantity} ${product.title} to cart`);
       router.refresh();
     } catch (error) {
@@ -107,7 +108,7 @@ const ProductActions = ({
         onClick={handleAddToCart}
         disabled={isOutOfStock || !selectedVariant || isAdding}
         isLoading={isAdding}
-        className={`w-full h-10 ${isOutOfStock ? 'bg-gray-200 cursor-not-allowed' : ''}`}
+        className={`w-full h-10 ${isOutOfStock ? 'bg-gray-200 cursor-not-allowed' : 'bg-[#0093D0] hover:bg-[#007bb3] text-white'}`}
       >
         {isOutOfStock 
           ? "Out of Stock" 

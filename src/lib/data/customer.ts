@@ -15,7 +15,7 @@ import {
 } from "./cookies"
 
 export const retrieveCustomer =
-  async (): Promise<HttpTypes.StoreCustomer | null> => {
+  async (body:any): Promise<HttpTypes.StoreCustomer | null> => {
     const authHeaders = await getAuthHeaders()
 
     if (!authHeaders) return null
@@ -24,22 +24,13 @@ export const retrieveCustomer =
       ...authHeaders,
     }
 
-    const next = {
-      ...(await getCacheOptions("customers")),
+    try {
+      const { customer } = await sdk.store.customer.retrieve(body,  headers)
+      return customer
+    } catch (error) {
+      console.error('Error retrieving customer:', error)
+      return null
     }
-
-    return await sdk.client
-      .fetch<{ customer: HttpTypes.StoreCustomer }>(`/store/customers/me`, {
-        method: "GET",
-        query: {
-          fields: "*orders",
-        },
-        headers,
-        next,
-        cache: "force-cache",
-      })
-      .then(({ customer }) => customer)
-      .catch(() => null)
   }
 
 export const updateCustomer = async (body: any) => {

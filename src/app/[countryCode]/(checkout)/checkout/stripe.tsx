@@ -4,7 +4,7 @@ import { CardElement, Elements, useElements, useStripe } from "@stripe/react-str
 import { loadStripe } from "@stripe/stripe-js"
 import { useCart } from "../../../../providers/cart-provider"
 import { usePaymentContext } from "@modules/checkout/components/payment/payment-context"
-import { useState } from "react"
+import { useState, useEffect, Dispatch, SetStateAction } from "react"
 import { useRouter } from "next/navigation"
 
 // Make sure to use test mode key to match backend configuration
@@ -31,15 +31,37 @@ const cardStyle = {
   },
 }
 
+type PaymentSession = {
+  provider_id: string
+  data: {
+    client_secret?: string
+  }
+}
+
 export default function StripePayment() {
   const { cart } = useCart()
-  const clientSecret = cart?.payment_collection?.
-    payment_sessions?.[0].data.client_secret as string
+  const [clientSecret, setClientSecret] = useState<string | null>(null)
+
+  useEffect(() => {
+    const updateClientSecret = () => {
+      // Find the Stripe payment session
+      const stripeSession = cart?.payment_collection?.payment_sessions?.find(
+        (session: PaymentSession) => session.provider_id === "pp_stripe_stripe"
+      )
+      
+      const secret = stripeSession?.data?.client_secret
+      if (secret) {
+        setClientSecret(secret)
+      }
+    }
+
+    updateClientSecret()
+  }, [cart])
 
   if (!clientSecret) {
     return (
-      <div className="text-red-500 text-sm">
-        Unable to initialize payment. Please try again or contact support.
+      <div className="text-gray-500 text-sm">
+        Initializing payment...
       </div>
     )
   }
@@ -56,7 +78,7 @@ export default function StripePayment() {
 const StripeForm = ({ 
   clientSecret,
 }: {
-  clientSecret: string | undefined
+  clientSecret: string
 }) => {
   const router = useRouter()
   const { cart, refreshCart } = useCart()

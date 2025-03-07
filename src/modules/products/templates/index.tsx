@@ -11,13 +11,13 @@ import { useParams } from "next/navigation";
 type ProductTemplateProps = {
   product: HttpTypes.AdminProduct;
   region: HttpTypes.StoreRegion;
+  countryCode: string;
 }
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
   product,
   region,
+  countryCode,
 }) => {
-  const params = useParams();
-  const countryCode = (params?.countryCode as string) || "au";
 
   if (!product || !product.id) {
     return notFound();
@@ -132,7 +132,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   };
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 py-8 md:py-12">
+    <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 md:py-12">
       <div className="flex flex-col md:flex-row gap-8" data-testid="product-container">
         {/* Left Column - Image Gallery */}
         <div className="md:w-1/2">
@@ -189,16 +189,16 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           {product.description && (
             <div className="mb-8 border-t pt-8">
               <h3 className="text-lg font-medium mb-4">Description</h3>
-              <p className="text-gray-600 whitespace-pre-line">{product.description}</p>
+              <p className="text-gray-600">{product.description}</p>
             </div>
           )}
-          
+
           {/* Additional Product Details */}
           {(product.material || product.weight || product.origin_country || product.hs_code ||
             product.width || product.height || product.length) && (
             <div className="border-t pt-8">
               <h3 className="text-lg font-medium mb-4">Product Specifications</h3>
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
                 {product.material && (
                   <p className="text-sm"><span className="font-medium">Material:</span> {product.material}</p>
                 )}
@@ -226,3 +226,4 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 }
 
 export default ProductTemplate;
+

@@ -15,6 +15,7 @@ import MobileActions from "./mobile-actions"
 type ProductActionsProps = {
   product: HttpTypes.AdminProduct | HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
+  countryCode: string
   disabled?: boolean
   onVariantChange?: (variant: HttpTypes.AdminProductVariant) => void
 }

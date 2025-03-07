@@ -43,17 +43,17 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { amount: price } = getProductPrice(product)
 
   return (
-    <div className="group bg-white shadow-md rounded-lg overflow-hidden p-4 flex flex-col items-center w-full">
+    <div className="group bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] rounded-lg overflow-hidden p-4 flex flex-col items-center w-full transition-all duration-300 hover:-translate-y-1">
       <Link href={`/au/catalog/${handle}`} className="w-full" aria-label={`View ${title}`}>
-        <div className="w-full aspect-square flex justify-center items-center bg-gray-100 rounded-lg overflow-hidden">
+        <div className="relative w-full aspect-[3/4] flex justify-center items-center bg-gray-50 rounded-lg overflow-hidden">
           <img
             src={thumbnail}
             alt={title}
-            className="h-full w-full object-contain"
+            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </div>
-        <h3 className="mt-3 text-center text-sm text-gray-700 font-medium">{title}</h3>
-        <p className="mt-2 text-center text-sm font-semibold text-[#0093D0]">
+        <h3 className="mt-4 text-center text-base text-gray-800 font-medium line-clamp-2 group-hover:text-[#0093D0] transition-colors duration-200">{title}</h3>
+        <p className="mt-2 text-center text-base font-semibold text-[#0093D0] group-hover:text-[#007bb3] transition-colors duration-200">
           {price ? `AUD $${price.toFixed(2)}` : "Price not available"}
         </p>
       </Link>

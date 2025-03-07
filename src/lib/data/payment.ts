@@ -20,10 +20,13 @@ type PaymentCollection = HttpTypes.StorePaymentCollection
 
 export async function getPaymentProviders(regionId: string): Promise<PaymentProvider[]> {
   if (!regionId) {
+    console.error("getPaymentProviders: Region ID is missing")
     throw new Error("Region ID is required to fetch payment providers")
   }
 
   try {
+    console.log("Fetching payment providers for region:", regionId)
+    
     const { payment_providers } = await sdk.client.fetch<{ payment_providers: PaymentProvider[] }>(
       `/store/payment-providers`,
       {
@@ -33,12 +36,23 @@ export async function getPaymentProviders(regionId: string): Promise<PaymentProv
     )
     
     if (!payment_providers?.length) {
+      console.error("No payment providers found for region:", regionId)
       throw new Error("No payment providers available for this region")
     }
 
+    console.log("Available payment providers:", payment_providers.map(p => ({
+      id: p.id,
+      name: p.name,
+      is_installed: p.is_installed
+    })))
+
     return payment_providers
   } catch (error: any) {
-    console.error("Error fetching payment providers:", error)
+    console.error("Error fetching payment providers:", {
+      error: error.message,
+      regionId,
+      stack: error.stack
+    })
     throw new Error(error.message || "Failed to retrieve payment providers")
   }
 }
@@ -61,6 +75,7 @@ export async function initializePayment(
       paymentCollection = await getPaymentCollection(cartId)
       if (!paymentCollection) {
         // Create payment collection 
+        console.log("Creating payment collection for cart:", cartId)
         const response = await sdk.client.fetch<{ payment_collection: PaymentCollection }>(
           `/store/payment-collections`,
           {
@@ -74,6 +89,7 @@ export async function initializePayment(
       }
       attempts++
       if (!paymentCollection && attempts < 3) {
+        console.log(`Payment collection creation attempt ${attempts} failed, retrying...`)
         await new Promise(resolve => setTimeout(resolve, 1000)) // Wait 1s before retry
       }
     }
@@ -83,6 +99,7 @@ export async function initializePayment(
     }
 
     // Initialize payment session
+    console.log("Initializing payment session for provider:", providerId)
     const { payment_session } = await sdk.client.fetch<{ payment_session: PaymentSession }>(
       `/store/payment-collections/${paymentCollection.id}/payment-sessions`,
       {
@@ -111,7 +128,12 @@ export async function initializePayment(
 
     return payment_session
   } catch (error: any) {
-    console.error("Error initializing payment:", error)
+    console.error("Error initializing payment:", {
+      error: error.message,
+      cartId,
+      providerId,
+      stack: error.stack
+    })
     throw new Error(error.message || "Failed to initialize payment")
   }
 }
@@ -138,7 +160,11 @@ export async function getPaymentCollection(cartId: string): Promise<PaymentColle
     if (error.message === "Cart not found") {
       return null
     }
-    console.error("Error fetching payment collection:", error)
+    console.error("Error fetching payment collection:", {
+      error: error.message,
+      cartId,
+      stack: error.stack
+    })
     throw new Error(error.message || "Failed to fetch payment collection")
   }
 }
@@ -155,6 +181,7 @@ export async function completePayment(cartId: string) {
   }
 
   try {
+    console.log("Completing payment for cart:", cartId)
     const response = await sdk.client.fetch<CompletePaymentResponse>(
       `/store/carts/${cartId}/complete`,
       {
@@ -163,6 +190,7 @@ export async function completePayment(cartId: string) {
     )
     
     if (response.type === "order" && response.data) {
+      console.log("Payment completed successfully, order created:", response.data.id)
       return response.data
     }
 
@@ -171,7 +199,11 @@ export async function completePayment(cartId: string) {
       "Payment failed. Please check your payment details and try again."
     )
   } catch (error: any) {
-    console.error("Error completing payment:", error)
+    console.error("Error completing payment:", {
+      error: error.message,
+      cartId,
+      stack: error.stack
+    })
     throw new Error(
       error.message || 
       "An unexpected error occurred while processing your payment. Please try again."

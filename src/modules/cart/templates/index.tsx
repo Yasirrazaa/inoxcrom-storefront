@@ -60,8 +60,8 @@ const CartTemplate = ({ cart: initialCart, region, countryCode, customer }: Cart
   // Show empty cart state
   if (!cart?.items?.length) {
     return (
-      <div className="container mx-auto py-8">
-        <div className="flex items-center text-gray-500 mb-8">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+        <div className="flex items-center text-gray-500 mb-4 sm:mb-8">
           <Link href={`/${countryCode}`} className="hover:text-gray-700">
             Home
           </Link>
@@ -69,7 +69,7 @@ const CartTemplate = ({ cart: initialCart, region, countryCode, customer }: Cart
           <span className="text-gray-700">Shopping Cart</span>
         </div>
 
-        <div className="flex flex-col items-center gap-6 py-16 bg-white rounded-lg shadow-sm">
+        <div className="flex flex-col items-center gap-4 sm:gap-6 py-8 sm:py-16 bg-white rounded-lg shadow-sm">
           <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gray-100">
             <svg className="w-8 h-8 text-gray-400" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -144,8 +144,8 @@ const CartTemplate = ({ cart: initialCart, region, countryCode, customer }: Cart
   const currencyCode = region?.currency_code?.toUpperCase() ?? 'AUD'
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center text-gray-500 mb-8">
+    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+      <div className="flex items-center text-gray-500 mb-4 sm:mb-8">
         <Link href={`/${countryCode}`} className="hover:text-gray-700">
           Home
         </Link>
@@ -153,40 +153,43 @@ const CartTemplate = ({ cart: initialCart, region, countryCode, customer }: Cart
         <span className="text-gray-700">Shopping Cart</span>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8">
         <div className="lg:col-span-8">
           <div className="space-y-4">
             {cart.items.map((item) => {
               const product = item.variant?.product
               return (
-                <div key={item.id} className="flex gap-4 bg-white p-6 rounded-lg shadow-lg">
-                  {/* Checkbox */}
-                  <div className="flex items-start pt-2">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      checked={selectedItems[item.id] || false}
-                      onChange={() => {
-                        setSelectedItems(prev => ({
-                          ...prev,
-                          [item.id]: !prev[item.id]
-                        }))
-                      }}
-                    />
+                <div key={item.id} className="flex flex-col sm:flex-row gap-4 bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+                  <div className="flex gap-4 items-start">
+                    {/* Checkbox */}
+                    <div className="flex items-start pt-2">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        checked={selectedItems[item.id] || false}
+                        onChange={() => {
+                          setSelectedItems(prev => ({
+                            ...prev,
+                            [item.id]: !prev[item.id]
+                          }))
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Product Image */}
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 relative flex-shrink-0">
+                      <img
+                        src={product?.thumbnail || item.thumbnail || '/placeholder-image.png'}
+                        alt={product?.title || 'Product image'}
+                        className="w-full h-full object-contain rounded-md"
+                      />
+                    </div>
+
                   </div>
                   
-                  {/* Product Image */}
-                  <div className="w-24 h-24 relative">
-                    <img
-                      src={product?.thumbnail || item.thumbnail || '/placeholder-image.png'}
-                      alt={product?.title || 'Product image'}
-                      className="w-full h-full object-contain rounded-md"
-                    />
-                  </div>
-
                   {/* Product Details */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-gray-900">
+                  <div className="flex-1 min-w-0 sm:pl-4">
+                    <h3 className="font-medium text-gray-900 text-sm sm:text-base">
                       {item?.subtitle || 'Unknown Product'}
                     </h3>
                     {product?.subtitle && (
@@ -202,9 +205,9 @@ const CartTemplate = ({ cart: initialCart, region, countryCode, customer }: Cart
                       </div>
                     )}
                     
-                    <div className="flex items-center gap-4 mt-4">
+                    <div className="flex flex-wrap items-center gap-4 mt-4">
                       {/* Quantity Controls */}
-                      <div className="flex items-center gap-x-2 bg-gray-50 p-2 rounded-lg">
+                      <div className="flex items-center gap-x-2 bg-gray-50 p-2 rounded-lg flex-shrink-0">
                         <button
                           onClick={() => updateItem(item.id, Math.max(0, (item.quantity || 1) - 1))}
                           disabled={updating || item.quantity <= 1}
@@ -248,7 +251,7 @@ const CartTemplate = ({ cart: initialCart, region, countryCode, customer }: Cart
                   </div>
 
                   {/* Price */}
-                  <div className="text-right space-y-1">
+                  <div className="w-full sm:w-auto text-right space-y-1 mt-4 sm:mt-0">
                     <div>
                       <p className="text-sm text-gray-600">
                         {item.quantity} × {currencyCode} {((item.unit_price || 0) ).toFixed(2)}
@@ -267,31 +270,33 @@ const CartTemplate = ({ cart: initialCart, region, countryCode, customer }: Cart
         </div>
 
         {/* Order Summary */}
-        <div className="lg:col-span-4">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold">Order Summary</h2>
-              <button
-                onClick={() => {
-                  const allSelected = cart?.items?.every(item => selectedItems[item.id])
-                  const newSelectedState = cart?.items?.reduce((acc, item) => ({
-                    ...acc,
-                    [item.id]: !allSelected
-                  }), {})
-                  setSelectedItems(newSelectedState || {})
-                }}
-                className="text-sm text-blue-600 hover:text-blue-800"
-              >
-                {cart?.items?.every(item => selectedItems[item.id])
-                  ? "Deselect All"
-                  : "Select All"}
-              </button>
+        <div className="lg:col-span-4 sticky top-4">
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 mb-4">
+              <h2 className="text-base sm:text-lg font-bold">Order Summary</h2>
+              <div className="w-full sm:w-auto">
+                <button
+                  onClick={() => {
+                    const allSelected = cart?.items?.every(item => selectedItems[item.id])
+                    const newSelectedState = cart?.items?.reduce((acc, item) => ({
+                      ...acc,
+                      [item.id]: !allSelected
+                    }), {})
+                    setSelectedItems(newSelectedState || {})
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-800 w-full sm:w-auto px-3 py-1 rounded-md hover:bg-blue-50 transition-colors"
+                >
+                  {cart?.items?.every(item => selectedItems[item.id])
+                    ? "Deselect All Items"
+                    : "Select All Items"}
+                </button>
+              </div>
             </div>
             
             {cart && <CartTotals totals={cart} selectedItems={selectedItems} />}
 
             <Button
-              className="w-full mt-6 relative"
+              className="w-full mt-6 relative bg-[#0093D0] hover:bg-[#0077A8] text-white font-bold rounded transition-colors disabled:opacity-50 disabled:hover:bg-[#0093D0]"
               disabled={updating || !Object.values(selectedItems).some(v => v)}
               onClick={async () => {
                 let errorMessage: string | null = null;

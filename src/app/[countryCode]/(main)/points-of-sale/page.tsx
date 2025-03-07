@@ -157,20 +157,20 @@ export default function PointsOfSale() {
   });
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center text-gray-500 mb-4">
+    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+      <div className="flex items-center text-gray-500 mb-4 text-sm sm:text-base">
         <Link href="/" className="hover:text-gray-700">
           Home
         </Link>
         <span className="mx-2">&gt;</span>
         <span className="text-gray-700">Points of sale</span>
       </div>
-      <h1 className="text-2xl font-bold mb-4">Points of sale</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-4">Points of sale</h1>
 
-      <div className="flex gap-6">
-        {/* Left side: Google Maps placeholder - 70% width */}
-        <div className="w-[70%]">
-          <div className="h-[700px] border border-gray-300 rounded-md bg-gray-50 flex items-center justify-center">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left side: Google Maps placeholder - full width on mobile, 70% on desktop */}
+        <div className="w-full lg:w-[70%] order-2 lg:order-1">
+          <div className="h-[300px] sm:h-[400px] lg:h-[700px] border border-gray-300 rounded-md bg-gray-50 flex items-center justify-center">
             <div className="text-center max-w-lg mx-auto">
               <p className="text-gray-500 flex items-center justify-center">
                 <svg className="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -183,13 +183,13 @@ export default function PointsOfSale() {
           </div>
         </div>
 
-        {/* Right side: Search and store list - 30% width */}
-        <div className="w-[30%]">
+        {/* Right side: Search and store list - full width on mobile, 30% on desktop */}
+        <div className="w-full lg:w-[30%] order-1 lg:order-2">
           <div className="mb-4 relative">
             <input
               type="text"
-              placeholder="Filter by store name or address"
-              className="border border-gray-300 rounded-md px-4 py-2 w-full pr-10"
+              placeholder="Search stores..."
+              className="border border-gray-300 rounded-md px-4 py-3 w-full pr-10 text-base sm:text-sm focus:ring-2 focus:ring-[#0093D0] focus:border-[#0093D0] transition-shadow"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -200,22 +200,25 @@ export default function PointsOfSale() {
             </div>
           </div>
 
-          <div className="h-[600px] overflow-y-auto space-y-4 pr-4">
+          <div className="h-[300px] sm:h-[400px] lg:h-[600px] overflow-y-auto space-y-4 pr-2 sm:pr-4">
             {filteredStores.map((store, index) => (
-              <div key={index} className="border-b border-gray-200 pb-4 last:border-b-0">
-                <h3 className="font-bold text-sm text-gray-900">{store.name}</h3>
-                <p className="text-xs text-gray-600 mt-1">{store.address1}</p>
-                <p className="text-xs text-gray-600">{store.address2}</p>
+              <div
+                key={index}
+                className="border-b border-gray-200 pb-4 last:border-b-0 hover:bg-gray-50 p-3 rounded-lg transition-colors"
+              >
+                <h3 className="font-bold text-base sm:text-sm text-gray-900">{store.name}</h3>
+                <p className="text-sm sm:text-xs text-gray-600 mt-2">{store.address1}</p>
+                <p className="text-sm sm:text-xs text-gray-600">{store.address2}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="mt-12 py-6 text-center bg-gray-50 rounded-md">
-        <p className="text-sm text-gray-700">If you want to distribute Inoxcrom® products</p>
+      <div className="mt-8 sm:mt-12 py-6 sm:py-8 text-center bg-gray-50 rounded-lg shadow-sm">
+        <p className="text-sm sm:text-base text-gray-700 px-4">If you want to distribute Inoxcrom® products</p>
         <Link href="/au/contact">
-          <button className="bg-[#0093D0] hover:bg-blue-700 text-white font-bold py-2 px-6 rounded mt-3 text-sm transition-colors">
+          <button className="bg-[#0093D0] hover:bg-[#0077A8] text-white font-bold py-2.5 px-6 sm:px-8 rounded-md mt-4 text-sm sm:text-base transition-colors">
             Contact us
           </button>
         </Link>

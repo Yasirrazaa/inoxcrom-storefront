@@ -8,12 +8,14 @@ type ImageGalleryProps = {
   images: Image[]
   isZoomed?: boolean
   onZoom?: (isZoomed: boolean) => void
+  zoomLevel?: number
 }
 
 const ImageGallery: React.FC<ImageGalleryProps> = ({ 
-  images, 
+  images,
   isZoomed = false,
-  onZoom = () => {}
+  onZoom = () => {},
+  zoomLevel = 2
 }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [displayImages, setDisplayImages] = useState<Image[]>([])
@@ -106,6 +108,15 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     if (isZoomed) {
       // For zoom pan functionality
       setMousePosition({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
+      
+      // Update transform origin for panning
+      if (mainImageRef.current) {
+        const xOrigin = e.nativeEvent.offsetX / mainImageRef.current.offsetWidth * 100;
+        const yOrigin = e.nativeEvent.offsetY / mainImageRef.current.offsetHeight * 100;
+        
+        mainImageRef.current.style.transformOrigin = `${xOrigin}% ${yOrigin}%`;
+      }
+      
       return;
     }
     
@@ -137,7 +148,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   // Calculate zoom styles
   const zoomStyles = isZoomed && mainImageRef.current ? {
     cursor: 'zoom-out',
-    transform: 'scale(2)',
+    transform: `scale(${zoomLevel})`,
     transformOrigin: `${mousePosition.x / mainImageRef.current.offsetWidth * 100}% ${mousePosition.y / mainImageRef.current.offsetHeight * 100}%`,
     transition: isDragging ? 'none' : 'transform 0.1s ease-out'
   } : { cursor: 'zoom-in' };
@@ -154,8 +165,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   return (
     <div className="flex flex-col">
       {/* Main image slider */}
-      <div className="relative w-full aspect-square mb-4 overflow-hidden rounded-lg">
-        <div 
+      <div className="relative w-full mb-4 overflow-hidden rounded-lg">
+        <div
           ref={sliderRef}
           className={`w-full h-full bg-gray-100 rounded-lg overflow-hidden relative ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
           onTouchStart={handleTouchStart}
@@ -172,7 +183,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             alt={displayImages[selectedImageIndex].alt || "Product image"}
             className="w-full h-full object-contain transition-all"
             style={zoomStyles}
-            onClick={toggleZoom}
+            onDoubleClick={toggleZoom}
             draggable={false}
           />
 
@@ -237,7 +248,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 <button
                   key={`${image.id || image.url}-${index}`}
                   className={`
-                    aspect-square w-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all
+                    aspect-square w-24 md:w-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all
                     ${selectedImageIndex === index ? 'border-blue-600 scale-105' : 'border-transparent hover:border-gray-300'}
                   `}
                   onClick={() => setSelectedImageIndex(index)}
