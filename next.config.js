@@ -6,12 +6,6 @@ checkEnvVariables();
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-    // Server configuration
-  serverOptions: {
-    hostname: '0.0.0.0',
-    port: process.env.PORT || 8000
-  },
-
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
@@ -32,7 +26,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: process.env.NODE_ENV === "production" ? "https://inoxcrom-backend-production-7f9c.up.railway.app" : "localhost",
+        hostname: process.env.NODE_ENV === "production" ? "https://inoxcrom-backend-production-7f9c.up.railway.app" : "https://inoxcrom-backend-staging-7f9c.up.railway.app",
       },
       {
         protocol: "https",
@@ -50,12 +44,17 @@ const nextConfig = {
         protocol: "https",
         hostname: "inoxcrom.es",
       },
+      {
+        // MinIO service pattern
+        protocol: "https",
+        hostname: process.env.MINIO_ENDPOINT?.replace(/^https?:\/\//, '') || '',
+      },
     ],
   },
 
   // ✅ Ensure Next.js picks up the correct Medusa backend URL
   env: {
-    NEXT_PUBLIC_MEDUSA_BACKEND_URL: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000",
+    NEXT_PUBLIC_MEDUSA_BACKEND_URL: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL,
   },
 };
 
