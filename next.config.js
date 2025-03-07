@@ -26,7 +26,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: process.env.NODE_ENV === "production" ? "https://inoxcrom-backend-production-7f9c.up.railway.app" : "https://inoxcrom-backend-staging-7f9c.up.railway.app",
+        hostname: process.env.NODE_ENV === "production" ? "inoxcrom-backend-production-7f9c.up.railway.app" : "inoxcrom-backend-staging-7f9c.up.railway.app",
       },
       {
         protocol: "https",
