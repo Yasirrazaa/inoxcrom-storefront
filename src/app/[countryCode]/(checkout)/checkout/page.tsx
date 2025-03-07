@@ -44,23 +44,13 @@ export default async function Checkout({
 
   // Ensure we have valid cart data
   if (!cart.email) {
-    // Redirect to cart with a friendly message if email is missing
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Email Address Required</h2>
-      <p className="text-gray-600 mb-6">Please add your email address in your account before proceeding to checkout.</p>
-      <Link 
-        href={`/${countryCode}/cart`} 
-        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-      >
-        Return to Cart
-      </Link>
-      </div>
-    );
+    redirect(`/${countryCode}/cart?missing=email`);
   }
 
   // Validate shipping address is present before allowing payment
- 
+  if (!cart.shipping_address?.address_1) {
+    redirect(`/${countryCode}/cart?missing=address`);
+  }
 
   const shippingMethods = await listCartShippingMethods(cart.id);
 
