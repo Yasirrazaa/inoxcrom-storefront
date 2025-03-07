@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { redirect } from "next/navigation"
 import Overview from "@modules/account/components/overview"
 import AccountLayout from "@modules/account/templates/account-layout"
 import { retrieveCustomer } from "@lib/data/customer"
@@ -15,16 +15,22 @@ export default async function Account({
 }: {
   params: { countryCode: string }
 }) {
-  const customer = await retrieveCustomer()
-  const orders = await listOrders()
+  try {
+    const customer = await retrieveCustomer()
 
-  if (!customer) {
-    notFound()
+    if (!customer) {
+      redirect(`/${params.countryCode}/login`)
+    }
+
+    const orders = await listOrders()
+
+    return (
+      <AccountLayout customer={customer}>
+        <Overview customer={customer} orders={orders || []} />
+      </AccountLayout>
+    )
+  } catch (error) {
+    console.error('Account page error:', error)
+    redirect(`/${params.countryCode}/login`)
   }
-
-  return (
-    <AccountLayout customer={customer}>
-      <Overview customer={customer} orders={orders} />
-    </AccountLayout>
-  )
 }
