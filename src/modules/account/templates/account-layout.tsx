@@ -45,10 +45,12 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
               <div className="flex-1">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Need Help?</h3>
                 <p className="text-gray-600">
+                  Feel free to reach out to our support team for assistance.
                   Need help? contact customer service.
                 </p>
               </div>
               <div className="flex items-center">
+                <UnderlineLink href="/contact">
                 <UnderlineLink href="/contact">
                   <button className="inline-flex items-center px-6 py-3 bg-[#0093D0] text-white rounded-lg hover:bg-[#007bb3] transition-colors duration-200 font-medium">
                     Visit Customer Service

@@ -4048,6 +4048,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sendgrid/client@npm:^8.1.4":
+  version: 8.1.4
+  resolution: "@sendgrid/client@npm:8.1.4"
+  dependencies:
+    "@sendgrid/helpers": ^8.0.0
+    axios: ^1.7.4
+  checksum: dde22db19d745c0f826fc5b5e1feaa99318e059391e8a7879ac4ae6a0b0297d7d0179bfb939e46c475ec5c0b494cdec753d16f1923da1ec9bf831028c9c6c935
+  languageName: node
+  linkType: hard
+
+"@sendgrid/helpers@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@sendgrid/helpers@npm:8.0.0"
+  dependencies:
+    deepmerge: ^4.2.2
+  checksum: 758cab1cb67c8d32632c7a599b2840186dcebc7e9fbc382633b5268d08ecf1de80817730ccbb5d0ad61905407070fa0a59c54d523e7b808b35b403ea0d4db22d
+  languageName: node
+  linkType: hard
+
+"@sendgrid/mail@npm:^8.1.4":
+  version: 8.1.4
+  resolution: "@sendgrid/mail@npm:8.1.4"
+  dependencies:
+    "@sendgrid/client": ^8.1.4
+    "@sendgrid/helpers": ^8.0.0
+  checksum: 0b0b01ec211d8b620038fa33a315652533f8f217ac8a6d1e208a1415b85d6a3f26b3a318e607aa18ad83d6addfd08a1bfb68db2c4df368915af7817371d934d8
+  languageName: node
+  linkType: hard
+
 "@stripe/react-stripe-js@npm:^3.1.1":
   version: 3.1.1
   resolution: "@stripe/react-stripe-js@npm:3.1.1"
@@ -4905,7 +4934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.8.1":
+"axios@npm:^1.7.4, axios@npm:^1.8.1":
   version: 1.8.1
   resolution: "axios@npm:1.8.1"
   dependencies:
@@ -5370,6 +5399,13 @@ __metadata:
   version: 0.1.4
   resolution: "deep-is@npm:0.1.4"
   checksum: edb65dd0d7d1b9c40b2f50219aef30e116cedd6fc79290e740972c132c09106d2e80aa0bc8826673dd5a00222d4179c84b36a790eef63a4c4bca75a37ef90804
+  languageName: node
+  linkType: hard
+
+"deepmerge@npm:^4.2.2":
+  version: 4.3.1
+  resolution: "deepmerge@npm:4.3.1"
+  checksum: 2024c6a980a1b7128084170c4cf56b0fd58a63f2da1660dcfe977415f27b17dbe5888668b59d0b063753f3220719d5e400b7f113609489c90160bb9a5518d052
   languageName: node
   linkType: hard
 
@@ -7206,6 +7242,7 @@ __metadata:
     "@medusajs/ui-preset": latest
     "@radix-ui/react-accordion": ^1.2.1
     "@radix-ui/react-dropdown-menu": ^2.1.6
+    "@sendgrid/mail": ^8.1.4
     "@stripe/react-stripe-js": ^3.1.1
     "@stripe/stripe-js": ^5.7.0
     "@types/lodash": ^4.14.195

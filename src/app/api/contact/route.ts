@@ -1,35 +1,31 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
 export async function POST(request: Request) {
   const formData = await request.formData();
   
-  // Create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
+  // Set SendGrid API Key
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
   // Setup email data
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.CONTACT_EMAIL,
+  const msg = {
+    to: process.env.CONTACT_EMAIL || '',
+    from: process.env.SENDGRID_VERIFIED_SENDER || '', // Must be verified in SendGrid
     subject: 'New Contact Form Submission',
     text: `Contact Type: ${formData.get('id_contact')}
 Email: ${formData.get('email')}
 Message: ${formData.get('message')}`,
     attachments: formData.get('attachment') ? [{
       filename: (formData.get('attachment') as File).name,
-      content: Buffer.from(await (formData.get('attachment') as File).arrayBuffer())
+      content: Buffer.from(await (formData.get('attachment') as File).arrayBuffer()).toString('base64'),
+      type: (formData.get('attachment') as File).type,
+      disposition: 'attachment'
     }] : []
   };
 
   try {
-    // Send mail with defined transport object
-    await transporter.sendMail(mailOptions);
+    // Send mail using SendGrid
+    await sgMail.send(msg);
     return NextResponse.json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Error sending email:', error);
