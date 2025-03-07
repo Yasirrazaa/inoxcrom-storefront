@@ -47,7 +47,7 @@ const nextConfig = {
       {
         // MinIO service pattern
         protocol: "https",
-        hostname: process.env.MINIO_ENDPOINT?.replace(/^https?:\/\//, '') || '',
+        hostname: "*",
       },
     ],
   },
