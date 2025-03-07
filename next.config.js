@@ -6,6 +6,12 @@ checkEnvVariables();
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+    // Server configuration
+  serverOptions: {
+    hostname: '0.0.0.0',
+    port: process.env.PORT || 8000
+  },
+
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
