@@ -51,7 +51,6 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
               </div>
               <div className="flex items-center">
                 <UnderlineLink href="/contact">
-                <UnderlineLink href="/contact">
                   <button className="inline-flex items-center px-6 py-3 bg-[#0093D0] text-white rounded-lg hover:bg-[#007bb3] transition-colors duration-200 font-medium">
                     Visit Customer Service
                   </button>
