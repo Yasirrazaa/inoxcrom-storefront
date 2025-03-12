@@ -20,6 +20,9 @@ type MobileActionsProps = {
   isAdding?: boolean;
   show: boolean;
   optionsDisabled: boolean;
+  quantity: number;
+  updateQuantity: (newQuantity: number) => void;
+  errorMessage?: string;
 };
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -32,8 +35,11 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   isAdding,
   show,
   optionsDisabled,
+  quantity,
+  updateQuantity,
+  errorMessage,
 }) => {
-  const { state, open, close } = useToggleState();
+  const dialogState = useToggleState(false);
 
   const price = getProductPrice({
     product: product,
@@ -48,6 +54,14 @@ const MobileActions: React.FC<MobileActionsProps> = ({
 
     return variantPrice || cheapestPrice || null;
   }, [price]);
+
+  const isOutOfStock = variant && (
+    ('inventory_quantity' in variant &&
+    variant.manage_inventory &&
+    !variant.allow_backorder &&
+    (variant.inventory_quantity ?? 0) === 0) ||
+    errorMessage?.toLowerCase().includes('out of stock')
+  );
 
   return (
     <>
@@ -97,8 +111,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             </div>
             <div className="flex flex-col w-full gap-y-2">
               <Button
-                onClick={open}
-                variant="secondary"
+                onClick={dialogState.open}
+                variant={(variant && (!inStock || isOutOfStock)) ? "danger" : "secondary"}
                 className="w-full h-12"
                 data-testid="mobile-actions-button"
               >
@@ -114,24 +128,33 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <div className="flex gap-2 w-full">
                 <Button
                   onClick={handleAddToCart}
-                  disabled={!inStock || !variant}
+                  disabled={
+                    !inStock || 
+                    !variant || 
+                    isOutOfStock
+                  }
+                  variant={
+                    !inStock || isOutOfStock
+                      ? "danger"
+                      : "primary"
+                  }
                   className="flex-1 h-12 font-medium"
                   isLoading={isAdding}
                   data-testid="mobile-cart-button"
                 >
                   {!variant
                     ? "Select variant"
-                    : !inStock
+                    : !inStock || isOutOfStock
                     ? "Out of stock"
-                    : "Add to cart"}
+                    : `Add to cart${quantity > 1 ? ` (${quantity})` : ''}`}
                 </Button>
               </div>
             </div>
           </div>
         </Transition>
       </div>
-      <Transition appear show={state} as={Fragment}>
-        <Dialog as="div" className="relative z-[75]" onClose={close}>
+      <Transition appear show={dialogState.state} as={Fragment}>
+        <Dialog as="div" className="relative z-[75]" onClose={dialogState.close}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -161,16 +184,16 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 >
                   <div className="w-full flex justify-end pr-6">
                     <button
-                      onClick={close}
+                      onClick={dialogState.close}
                       className="bg-white w-12 h-12 rounded-full text-ui-fg-base flex justify-center items-center"
                       data-testid="close-modal-button"
                     >
                       <X />
                     </button>
                   </div>
-                  <div className="bg-white px-6 py-12">
+                  <div className="bg-white px-6 py-12 flex flex-col gap-y-6">
                     {(product.variants?.length ?? 0) > 1 && (
-                      <div className="flex flex-col gap-y-6">
+                      <>
                         {(product.options || []).map((option) => {
                           return (
                             <div key={option.id}>
@@ -184,6 +207,58 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                             </div>
                           )
                         })}
+                      </>
+                    )}
+
+                    {/* Mobile Quantity Controls */}
+                    {variant && inStock && !isOutOfStock && (
+                      <div className="flex flex-col gap-y-2">
+                        <span className="text-ui-fg-base font-medium">Quantity</span>
+                        <div className="flex items-center">
+                          <div className="flex items-center border rounded-md">
+                            <button
+                              className="px-4 py-2 border-r hover:bg-gray-100"
+                              onClick={() => updateQuantity(quantity - 1)}
+                              disabled={quantity <= 1}
+                            >
+                              -
+                            </button>
+                            <input
+                              type="number"
+                              min="1"
+                              value={quantity}
+                              onChange={(e) => {
+                                const val = parseInt(e.target.value)
+                                if (val > 0) {
+                                  updateQuantity(val)
+                                }
+                              }}
+                              className="w-16 text-center border rounded-md p-1 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                            <button
+                              className="px-4 py-2 border-l hover:bg-gray-100"
+                              onClick={() => updateQuantity(quantity + 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Mobile Error Message */}
+                        {errorMessage && (
+                          <span className="text-rose-500 text-sm">
+                            {errorMessage}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Error Message (only for quantity errors) */}
+                    {errorMessage && !errorMessage.toLowerCase().includes('out of stock') && (
+                      <div className="mt-2">
+                        <span className="text-rose-500 text-sm">
+                          {errorMessage}
+                        </span>
                       </div>
                     )}
                   </div>

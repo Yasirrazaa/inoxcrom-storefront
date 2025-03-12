@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { ChevronDown } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 const normalize = (str: string) => str?.toLowerCase().trim().replace(/\s+/g, '-') || ""
 import { normalizeString } from "@lib/util/generate-handle"
@@ -73,9 +73,26 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
   const countryCode = params?.countryCode as string || "es"
   const [isOpen, setIsOpen] = useState(false)
 
+  // Reference to track the mobile dropdown container
+  const mobileDropdownRef = useRef<HTMLDivElement>(null)
+
+  // Handle clicks outside for mobile dropdown
+  const handleMobileClickOutside = (event: MouseEvent) => {
+    if (mobileDropdownRef.current && !mobileDropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false)
+    }
+  }
+
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      document.addEventListener('mousedown', handleMobileClickOutside)
+      return () => document.removeEventListener('mousedown', handleMobileClickOutside)
+    }
+  }, [isMobile, isOpen])
+
   if (isMobile) {
     return (
-      <div className="w-full">
+      <div className="w-full" ref={mobileDropdownRef}>
         <button 
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center text-white hover:text-gray-200 w-full"
@@ -94,6 +111,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                     key={item}
                     href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                     className="block text-white hover:text-gray-200 text-sm py-1 pl-4"
+                    onClick={() => setIsOpen(false)}
                   >
                     <span className="text-white mr-2">&gt;</span>
                     {item}
@@ -109,6 +127,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                     key={item}
                     href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                     className="block text-white hover:text-gray-200 text-sm py-1 pl-4"
+                    onClick={() => setIsOpen(false)}
                   >
                     <span className="text-white mr-2">&gt;</span>
                     {item}
@@ -124,6 +143,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                     key={item}
                     href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                     className="block text-white hover:text-gray-200 text-sm py-1 pl-4"
+                    onClick={() => setIsOpen(false)}
                   >
                     <span className="text-white mr-2">&gt;</span>
                     {item}
@@ -139,6 +159,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                     key={item}
                     href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                     className="block text-white hover:text-gray-200 text-sm py-1 pl-4"
+                    onClick={() => setIsOpen(false)}
                   >
                     <span className="text-white mr-2">&gt;</span>
                     {item}
@@ -154,6 +175,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                     key={item}
                     href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                     className="block text-white hover:text-gray-200 text-sm py-1 pl-4"
+                    onClick={() => setIsOpen(false)}
                   >
                     <span className="text-white mr-2">&gt;</span>
                     {item}
@@ -167,8 +189,28 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
     )
   }
 
+  // Reference to track the dropdown container
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Handle clicks outside the dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Close dropdown when a link is clicked
+  const handleLinkClick = () => {
+    setIsOpen(false)
+  }
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center hover:text-gray-200"
@@ -186,6 +228,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                 key={item}
                 href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                 className="text-gray-600 hover:text-gray-900 text-sm pl-4"
+                onClick={handleLinkClick}
               >
                 <span className="text-[#0093D0] mr-2">&gt;</span>
                 {item}
@@ -201,6 +244,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                 key={item}
                 href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                 className="text-gray-600 hover:text-gray-900 text-sm pl-4"
+                onClick={handleLinkClick}
               >
                 <span className="text-[#0093D0] mr-2">&gt;</span>
                 {item}
@@ -216,6 +260,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                 key={item}
                 href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                 className="text-gray-600 hover:text-gray-900 text-sm pl-4"
+                onClick={handleLinkClick}
               >
                 <span className="text-[#0093D0] mr-2">&gt;</span>
                 {item}
@@ -231,6 +276,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                 key={item}
                 href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                 className="text-gray-600 hover:text-gray-900 text-sm pl-4 whitespace-nowrap"
+                onClick={handleLinkClick}
               >
                 <span className="text-[#0093D0] mr-2">&gt;</span>
                 {item}
@@ -246,6 +292,7 @@ export function ShopDropdown({ isMobile = false }: ShopDropdownProps) {
                 key={item}
                 href={`/${countryCode}/catalog?filter=${normalize(item)}`}
                 className="text-gray-600 hover:text-gray-900 text-sm pl-4 whitespace-nowrap"
+                onClick={handleLinkClick}
               >
                 <span className="text-[#0093D0] mr-2">&gt;</span>
                 {item}

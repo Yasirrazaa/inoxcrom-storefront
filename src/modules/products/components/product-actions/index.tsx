@@ -45,6 +45,8 @@ export default function ProductActions({
 }: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [quantity, setQuantity] = useState(1)
+  const [errorMessage, setErrorMessage] = useState("")
   const countryCode = useParams().countryCode as string
 
   // If there is only 1 variant, preselect the options and notify parent
@@ -91,42 +93,114 @@ export default function ProductActions({
     })
   }, [product.variants, options])
 
-  const inStock = useMemo(() => {
+
+  
+  const isInStock = useMemo(() => {
     if (!selectedVariant) return false
+    if (errorMessage?.toLowerCase().includes('out of stock')) return false
+    if (!selectedVariant.manage_inventory) return true
+    return (selectedVariant.inventory_quantity ?? 0) > 0
+  }, [selectedVariant, errorMessage])
 
-    if (isAdminProduct(product) && isAdminVariant(selectedVariant)) {
-      if (product.status !== "published") {
-        return false
-      }
+  const inventoryQuantity = useMemo(() => {
+    if (!selectedVariant || !selectedVariant.manage_inventory) return undefined
+    return selectedVariant.inventory_quantity ?? 0
+  }, [selectedVariant])
 
-      if (!selectedVariant.manage_inventory) {
-        return true
-      }
-
-      if (selectedVariant.allow_backorder) {
-        return true
-      }
-
-      return (selectedVariant.inventory_quantity || 0) > 0
+  // Get inventory quantity for the selected variant
+  const getInventoryQuantity = (variant: HttpTypes.StoreProductVariant | HttpTypes.AdminProductVariant | undefined) => {
+    if (!variant) return 0
+    if (isAdminVariant(variant) && variant.manage_inventory && !variant.allow_backorder) {
+      return variant.inventory_quantity ?? 0
     }
+    return 0
+  }
 
-    const storeVariant = selectedVariant as HttpTypes.StoreProductVariant
-    if (!storeVariant.manage_inventory) {
-      return true
+  // Effect to reset quantity if variant changes
+  useEffect(() => {
+    if (!selectedVariant) return
+
+    // If inventory is not managed or quantity is greater than 0
+    if (!selectedVariant.manage_inventory || (selectedVariant.inventory_quantity ?? 0) > 0) {
+      const maxQuantity = selectedVariant.manage_inventory 
+        ? selectedVariant.inventory_quantity ?? 1
+        : Infinity
+
+      // If current quantity exceeds available inventory
+      if (quantity > maxQuantity) {
+        setQuantity(maxQuantity)
+      }
+    } else {
+      // If variant is out of stock
+      setQuantity(1)
     }
-
-    if (storeVariant.allow_backorder) {
-      return true
-    }
-
-    return (storeVariant.inventory_quantity || 0) > 0
-  }, [selectedVariant, product])
+  }, [selectedVariant, quantity])
 
   const actionsRef = useRef<HTMLDivElement>(null)
   const inView = useIntersection(actionsRef, "0px")
 
+  // Handle quantity changes from input
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, '')
+    
+    if (value === '') {
+      setQuantity(1)
+    } else {
+      const newQuantity = parseInt(value)
+      if (newQuantity >= 1) {
+        updateQuantity(newQuantity)
+      }
+    }
+  }
+
+  // Handle quantity changes from buttons
+  const updateQuantity = (newQuantity: number) => {
+    if (!selectedVariant) {
+      setErrorMessage("Please select a variant first")
+      return
+    }
+
+    if (newQuantity < 1) {
+      setQuantity(1)
+      setErrorMessage("")
+      return
+    }
+
+    let maxQuantity = Infinity
+    let inventoryManaged = false
+
+    if (isAdminVariant(selectedVariant)) {
+      if (selectedVariant.manage_inventory && !selectedVariant.allow_backorder) {
+        maxQuantity = selectedVariant.inventory_quantity ?? 0
+        inventoryManaged = true
+      }
+    } else {
+      const storeVariant = selectedVariant as HttpTypes.StoreProductVariant
+      if (storeVariant.manage_inventory && !storeVariant.allow_backorder) {
+        maxQuantity = storeVariant.inventory_quantity ?? 0
+        inventoryManaged = true
+      }
+    }
+
+    if (inventoryManaged) {
+      if (maxQuantity === 0) {
+        setQuantity(1)
+        setErrorMessage("This item is out of stock")
+      } else if (newQuantity > maxQuantity) {
+        setQuantity(maxQuantity)
+        setErrorMessage(`Only ${maxQuantity} items available`)
+      } else {
+        setQuantity(newQuantity)
+        setErrorMessage("")
+      }
+    } else {
+      setQuantity(newQuantity)
+      setErrorMessage("")
+    }
+  }
+
   const handleAddToCart = () => {
-    if (!selectedVariant?.id) return
+    if (!selectedVariant?.id || !isInStock) return
 
     setIsAdding(true)
 
@@ -138,14 +212,21 @@ export default function ProductActions({
 
     addToCart({
       variantId: selectedVariant.id,
-      quantity: 1,
+      quantity: quantity,
       countryCode,
     })
     .then(() => {
       setIsAdding(false)
+      setErrorMessage("")
     })
     .catch((err) => {
       console.error("Error adding to cart:", err)
+      // Check for sales channel error
+      if (err.message && err.message.includes("Sales channel")) {
+        setErrorMessage("This item is currently out of stock")
+      } else {
+        setErrorMessage("Error adding to cart. Please try again.")
+      }
       setIsAdding(false)
     })
   }
@@ -178,25 +259,66 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
+        {/* Quantity Controls */}
+        <div className="flex items-center gap-4 mb-4">
+          <span className="text-gray-700">Quantity:</span>
+          <div className="flex items-center border rounded-md">
+            <button
+              className="px-3 py-2 border-r hover:bg-gray-50"
+              onClick={() => updateQuantity(quantity - 1)}
+              disabled={quantity <= 1 || !isInStock || !selectedVariant}
+            >
+              -
+            </button>
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => {
+                const val = parseInt(e.target.value)
+                if (val > 0) {
+                  updateQuantity(val)
+                }
+              }}
+              className="w-16 text-center border rounded-md p-1 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              disabled={!isInStock || !selectedVariant}
+            />
+            <button
+              className="px-3 py-2 border-l hover:bg-gray-50"
+              onClick={() => updateQuantity(quantity + 1)}
+              disabled={!isInStock || !selectedVariant}
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="text-red-500 text-sm mb-4">
+            {errorMessage}
+          </div>
+        )}
+
         <div className="flex gap-2 w-full">
           <Button
             onClick={handleAddToCart}
-            disabled={
-              !inStock ||
-              !selectedVariant ||
-              !!disabled ||
-              isAdding ||
-              !isValidVariant
-            }
-            variant="primary"
-            className="flex-1 h-12 font-medium shadow-sm"
+            disabled={!selectedVariant || !!disabled || !!isAdding || !isValidVariant || !isInStock}
+            variant={!selectedVariant || !options ? "secondary" : !isInStock ? "danger" : "primary"}
+            className={`flex-1 h-12 font-medium shadow-sm transition-all duration-200 ${
+              (!selectedVariant || !options || !isValidVariant || !isInStock)
+              ? 'opacity-50 cursor-not-allowed'
+              : 'hover:opacity-90'
+            }`}
             isLoading={isAdding}
           >
-            {!selectedVariant && !options
+            {!selectedVariant || !options
               ? "Select variant"
-              : !inStock || !isValidVariant
-              ? "Out of stock"
-              : "Add to cart"}
+              : !isValidVariant
+                ? "Invalid selection"
+                : !isInStock
+                  ? "Out of stock"
+                  : `Add to cart${quantity > 1 ? ` (${quantity})` : ''}`}
           </Button>
         </div>
         <MobileActions
@@ -204,11 +326,14 @@ export default function ProductActions({
           variant={selectedVariant}
           options={options}
           updateOptions={setOptionValue}
-          inStock={inStock}
+          inStock={isInStock}
           handleAddToCart={handleAddToCart}
           isAdding={isAdding}
-          show={!inView}
+          show={!inView || false}
           optionsDisabled={!!disabled || isAdding}
+          quantity={quantity}
+          updateQuantity={updateQuantity}
+          errorMessage={errorMessage}
         />
       </div>
     </>

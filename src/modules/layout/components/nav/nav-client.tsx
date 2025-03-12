@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useParams } from "next/navigation"
@@ -14,6 +14,21 @@ export default function NavClient() {
   const countryCode = params?.countryCode as string || "au"
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
+
+  // Handle clicks outside the mobile menu
+  const handleMobileMenuClickOutside = (event: MouseEvent) => {
+    if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+      setIsMobileMenuOpen(false)
+    }
+  }
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleMobileMenuClickOutside)
+      return () => document.removeEventListener('mousedown', handleMobileMenuClickOutside)
+    }
+  }, [isMobileMenuOpen])
 
   return (
     <>
@@ -83,8 +98,12 @@ export default function NavClient() {
         </div>
       </nav>
 
-      <div className="block md:hidden">
-        <MobileNav countryCode={countryCode} isOpen={isMobileMenuOpen} />
+      <div className="block md:hidden" ref={mobileMenuRef}>
+        <MobileNav 
+          countryCode={countryCode} 
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
       </div>
 
       <SearchModal 

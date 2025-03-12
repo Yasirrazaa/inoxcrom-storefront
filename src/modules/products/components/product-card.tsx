@@ -38,7 +38,7 @@ function isAdminProduct(product: Product): product is HttpTypes.AdminProduct {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const handle = product.handle || generateHandle(product.title || "")
-  const thumbnail = product.thumbnail || ""
+  const thumbnail = product.thumbnail || "/placeholder.svg"
   const title = product.title || ""
   const { amount: price } = getProductPrice(product)
 
@@ -54,7 +54,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         <h3 className="mt-4 text-center text-base text-gray-800 font-medium line-clamp-2 group-hover:text-[#0093D0] transition-colors duration-200">{title}</h3>
         <p className="mt-2 text-center text-base font-semibold text-[#0093D0] group-hover:text-[#007bb3] transition-colors duration-200">
-          {price ? `AUD $${price.toFixed(2)}` : "Price not available"}
+          {price ? `AUD $${price.toFixed(2)}` : ""}
         </p>
       </Link>
     </div>

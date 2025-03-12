@@ -9,16 +9,16 @@ import ProductOptions from "@modules/products/components/product-options";
 import { useParams } from "next/navigation";
 
 type ProductTemplateProps = {
-  product: HttpTypes.AdminProduct;
+  product: HttpTypes.StoreProduct;
   region: HttpTypes.StoreRegion;
   countryCode: string;
 }
+
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
   product,
   region,
   countryCode,
 }) => {
-
   if (!product || !product.id) {
     return notFound();
   }
@@ -131,6 +131,22 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return `AUD $${(price).toFixed(2)}`;
   };
 
+  // Get inventory status for the selected variant
+  const getVariantInventoryStatus = useMemo(() => {
+    if (!selectedVariant) return { inStock: undefined, quantity: undefined }
+
+    // If inventory is not managed, always in stock
+    if (!selectedVariant.manage_inventory) {
+      return { inStock: true, quantity: undefined }
+    }
+
+    const quantity = selectedVariant.inventory_quantity ?? 0
+    return {
+      inStock: quantity > 0,
+      quantity: quantity
+    }
+  }, [selectedVariant])
+
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 md:py-12">
       <div className="flex flex-col md:flex-row gap-8" data-testid="product-container">
@@ -174,6 +190,23 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             />
           </div>
 
+          {/* Stock Status Display */}
+          {selectedVariant && getVariantInventoryStatus.inStock !== undefined && (
+            <div className="mb-4">
+              <div className={`p-3 rounded-md ${
+                getVariantInventoryStatus.inStock
+                  ? 'bg-green-50 text-green-700 border border-green-200'
+                  : 'bg-red-50 text-red-700 border border-red-200'
+              }`}>
+                {getVariantInventoryStatus.inStock 
+                  ? selectedVariant.manage_inventory 
+                    ? `In Stock`
+                    : "In Stock"
+                  : "Out of Stock"}
+              </div>
+            </div>
+          )}
+
           {/* Add to Cart Action */}
           <div className="mb-8">
             <ProductActions
@@ -181,7 +214,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
               region={region}
               selectedVariant={selectedVariant}
               onVariantChange={handleVariantChange}
-              countryCode={countryCode}
             />
           </div>
 
@@ -226,4 +258,3 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 }
 
 export default ProductTemplate;
-

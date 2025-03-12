@@ -124,7 +124,6 @@ const ProductActions = ({
         <>
           {isOutOfStock ? (
             <p className="text-sm font-medium text-red-600">
-              Currently out of stock
             </p>
           ) : getInventoryQuantity(selectedVariant) <= 5 && getInventoryQuantity(selectedVariant) > 0 && (
             <p className="text-sm text-yellow-600">
