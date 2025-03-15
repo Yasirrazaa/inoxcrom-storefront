@@ -31,10 +31,13 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="font-semibold mb-4">Contact us</h3>
-            <p className="text-gray-600">PensFromBCN, S.L.</p>
-            <p className="text-gray-600">Pallars, 85, 6-4</p>
-            <p className="text-gray-600">08018 · BARCELONA (Spain)</p>
-            <p className="text-gray-600">+34 932 500 456</p>
+            <p className="text-gray-600">Inoxcrom Australia/NewZealand, S.L.</p>
+            <p className="text-gray-600">Shop K 14, Robina Town Centre</p>
+            <p className="text-gray-600">Robina Qld  Australia 4226</p>
+            <p className="text-gray-600"> 0401709947</p>
+            <p className="text-gray-600">
+              <a href="mailto:sales@inoxcrom.com">sales@inoxcrom.com</a>
+            </p>
           </div>
 
           {/* Newsletter */}

@@ -39,7 +39,7 @@ export const RegionProvider = (
     const regionId = localStorage.getItem("region_id")
     if (!regionId) {
       // retrieve regions and select the first one
-      fetch(`${process.env.NEXT_PUBLIC_MEDUSA_URL}/store/regions`, {
+      fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/regions`, {
         credentials: "include",
         headers: {
           "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "temp",
@@ -51,7 +51,7 @@ export const RegionProvider = (
       })
     } else {
       // retrieve selected region
-      fetch(`${process.env.NEXT_PUBLIC_MEDUSA_URL}/store/regions/${regionId}`, {
+      fetch(`${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/regions/${regionId}`, {
         credentials: "include",
         headers: {
           "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "temp",

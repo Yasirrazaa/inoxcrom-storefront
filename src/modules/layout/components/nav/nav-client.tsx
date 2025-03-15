@@ -8,13 +8,50 @@ import { Search, User, ShoppingCart, Home, Menu, X } from "lucide-react"
 import { ShopDropdown } from "../../../../components/shop-dropdown"
 import SearchModal from "../../../../components/search-modal"
 import MobileNav from "../../../../components/mobile-nav"
+import { useCart } from "../../../../providers/cart-provider"
+import { retrieveCart } from "@lib/data/cart"
 
 export default function NavClient() {
   const params = useParams()
   const countryCode = params?.countryCode as string || "au"
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [cartItemsCount, setCartItemsCount] = useState(0)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
+
+  // Get cart items count
+  useEffect(() => {
+    const getCartCount = async () => {
+      const cart = await retrieveCart()
+      const count = cart?.items?.reduce(
+        (total, item) => total + (item.quantity || 0),
+        0
+      ) || 0
+      setCartItemsCount(count)
+    }
+    getCartCount()
+  }, [])
+
+  // Refresh cart count periodically
+  useEffect(() => {
+    const getCartCount = async () => {
+      const cart = await retrieveCart()
+      const count = cart?.items?.reduce(
+        (total, item) => total + (item.quantity || 0),
+        0
+      ) || 0
+      setCartItemsCount(count)
+    }
+
+    // Initial fetch
+    getCartCount()
+
+    // Set up interval to refresh every 5 seconds
+    const interval = setInterval(getCartCount, 5000)
+
+    // Cleanup on unmount
+    return () => clearInterval(interval)
+  }, [])
 
   // Handle clicks outside the mobile menu
   const handleMobileMenuClickOutside = (event: MouseEvent) => {
@@ -90,9 +127,15 @@ export default function NavClient() {
               <Link href={`/${countryCode}/account`} className="hover:text-gray-200">
                 <User className="h-5 w-5" />
               </Link>
-              <Link href={`/${countryCode}/cart`} className="hover:text-gray-200">
-                <ShoppingCart className="h-5 w-5" />
-              </Link>
+              <div className="relative">
+                <Link href={`/${countryCode}/cart`} className="hover:text-gray-200 inline-flex items-center">
+                  <ShoppingCart className="h-5 w-5" />
+                </Link>
+                {/* Always show badge for debugging */}
+                <span className="absolute -top-2 -right-2 min-w-[20px] h-5 flex items-center justify-center bg-white text-[#0093D0] text-xs font-bold rounded-full shadow-lg border-2 border-[#0093D0] z-[999] px-1">
+                  {cartItemsCount}
+                </span>
+              </div>
             </div>
           </div>
         </div>

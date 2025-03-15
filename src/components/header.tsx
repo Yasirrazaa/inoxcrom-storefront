@@ -38,13 +38,7 @@ export default function Header() {
             {/* Add dropdown menu here */}
           </div>
 
-          <div className="flex items-center gap-x-6">
-            <Link
-              href={`/${countryCode}/cart`}
-              className="relative flex items-center justify-center text-gray-800 hover:text-gray-600">
-              <ShoppingCart className="h-5 w-5" />
-            </Link>
-          </div>
+          {/* Cart icon moved to NavClient */}
         </div>
       </div>
     </header>
